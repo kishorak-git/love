@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For You ❤️</title>
+
 <style>
 body {
   margin: 0;
@@ -42,28 +43,32 @@ input {
   text-align: center;
 }
 
-#poem { white-space: pre-line; line-height: 1.6; }
+#poem {
+  white-space: pre-line;
+  line-height: 1.6;
+  font-size: 18px;
+}
 
-.gallery img {
+/* IMAGE BOX */
+#imageBox img {
   width: 80%;
-  margin: 10px;
   border-radius: 15px;
   opacity: 0;
-  transform: translateY(20px);
-  transition: all 1s ease;
+  transition: opacity 1s ease;
 }
 
-.gallery img.show {
-  opacity: 1;
-  transform: translateY(0);
+#quote {
+  margin-top: 15px;
+  font-style: italic;
 }
 
+/* TEDDY */
 #teddy {
   position: fixed;
   bottom: 20px;
   right: 20px;
   width: 80px;
-  animation: floatTeddy 3s ease-in-out infinite;
+  animation: floatTeddy 3s infinite;
 }
 
 @keyframes floatTeddy {
@@ -71,6 +76,7 @@ input {
   50% { transform: translateY(-10px); }
 }
 
+/* HEARTS */
 .heart-float {
   position: fixed;
   bottom: -20px;
@@ -82,76 +88,100 @@ input {
   0% { transform: translateY(0); opacity:1; }
   100% { transform: translateY(-100vh); opacity:0; }
 }
+
+/* GLOW */
+#poem {
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 5px #fff; }
+  to { text-shadow: 0 0 15px #ff4d6d; }
+}
 </style>
 </head>
+
 <body>
 
 <audio id="music" src="song.mp3" loop></audio>
 
+<!-- LOCK -->
 <div class="container" id="lock">
   <h2>When did I confess my love? 💖</h2>
   <input id="dateInput" placeholder="DD/MM/YYYY">
   <button onclick="unlock()">Unlock</button>
 </div>
 
+<!-- FLOW -->
 <div class="container hidden" id="step1">
   <h2>Tap to open 💌</h2>
   <button onclick="next('step1','step2')">Open</button>
 </div>
 
 <div class="container hidden" id="step2">
-  <h2>What moment made you smile the most with me? 💭</h2>
+  <h2>Best memory with me? 💭</h2>
   <input id="q1">
   <button onclick="next('step2','step3')">Next</button>
 </div>
 
 <div class="container hidden" id="step3">
-  <h2>What is something only we understand? 💞</h2>
+  <h2>What makes us special? 💞</h2>
   <input id="q2">
   <button onclick="next('step3','step4')">Next</button>
 </div>
 
 <div class="container hidden" id="step4">
-  <h2>What do you feel when you think of us? ❤️</h2>
+  <h2>How do you feel about us? ❤️</h2>
   <input id="q3">
   <button onclick="generatePoem()">Reveal ✨</button>
 </div>
 
+<!-- RESULT -->
 <div class="container hidden" id="result">
-  <h2>For You ❤️</h2>
   <div id="poem" class="card"></div>
 
-  <div class="gallery">
-    <img src="image1.jpg">
-    <img src="image2.jpg">
-    <img src="image3.jpg">
-    <img src="image4.jpg">
-    <img src="image5.jpg">
-    <img src="image6.jpg">
-    <img src="image7.jpg">
-    <img src="image8.jpg">
+  <div id="imageBox">
+    <img id="currentImage">
+    <div id="quote"></div>
   </div>
 </div>
 
 <img id="teddy" src="https://media.tenor.com/0AVbKGY_MxMAAAAi/teddy-bear.gif">
 
 <script>
+
+/* IMAGES */
+const images = [
+  "image1.jpg","image2.jpg","image3.jpg","image4.jpg",
+  "image5.jpg","image6.jpg","image7.jpg","image8.jpg"
+];
+
+/* QUOTES */
+const quotes = [
+  "With you, even silence feels special ❤️",
+  "Every moment with you is my favorite 💫",
+  "You are my calm and my chaos 💞",
+  "Your smile is my world 🌍",
+  "You are my peace 🤍",
+  "Time stops with you ⏳",
+  "You are my happiness 💖",
+  "It’s always you ❤️"
+];
+
+/* MUSIC */
 function playSmoothMusic() {
   const music = document.getElementById('music');
   music.volume = 0;
   music.play().catch(()=>{});
 
-  let vol = 0;
-  const fade = setInterval(() => {
-    if (vol < 0.3) {
-      vol += 0.01;
-      music.volume = vol;
-    } else {
-      clearInterval(fade);
-    }
-  }, 300);
+  let v = 0;
+  const fade = setInterval(()=>{
+    if(v < 0.3){ v += 0.01; music.volume = v; }
+    else clearInterval(fade);
+  },300);
 }
 
+/* UNLOCK */
 function unlock() {
   if(document.getElementById('dateInput').value === "25/06/2024") {
     document.getElementById('lock').classList.add('hidden');
@@ -168,49 +198,79 @@ function next(c,n){
   document.getElementById(n).classList.remove('hidden');
 }
 
+/* POEM GENERATOR */
 function generatePoem(){
-  const m=document.getElementById('q1').value;
-  const u=document.getElementById('q2').value;
-  const f=document.getElementById('q3').value;
+  const m = document.getElementById('q1').value;
+  const u = document.getElementById('q2').value;
+  const f = document.getElementById('q3').value;
 
-  const poem=`
-It started with ${m},
-A memory that still glows.
+  const endings = [
+    "நீ நலமா இருந்தா தான் நான் சந்தோஷம் ❤️",
+    "உன்ன கவனிக்குறதுல தான் என் காதல் இருக்குது 💞",
+    "நீ தான் என் அமைதி 🤍",
+    "உன்ன சிரிக்க வைக்க தான் என் வாழ்க்கை 💖"
+  ];
 
-In quiet moments we became ${u},
-Something only our hearts knows.
+  const ending = endings[Math.floor(Math.random()*endings.length)];
 
-Whenever I think of you,
-I feel ${f} deep inside.
+  const poem = `
+${m}… அந்த நினைவு இன்னும் என் மனசுல இருக்குது ❤️
 
-No matter where life goes,
-I just want you by my side ❤️`;
+${u}… அது நம்ம காதலோட அடையாளம் 💞
+
+நீ நினைச்சாலே… எனக்கு ${f} தான் உணர்ச்சி 😌
+
+${ending}
+`;
 
   document.getElementById('step4').classList.add('hidden');
   document.getElementById('result').classList.remove('hidden');
-  document.getElementById('poem').innerText=poem;
 
-  startGallery();
+  typeWriter(poem);
+  showImages();
 }
 
-function startGallery(){
-  const images=document.querySelectorAll('.gallery img');
-  const teddy=document.getElementById('teddy');
+/* TYPING */
+function typeWriter(text) {
+  const el = document.getElementById("poem");
+  el.innerHTML = "";
+  let i = 0;
 
-  images.forEach((img,i)=>{
-    setTimeout(()=>{
-      img.classList.add('show');
+  function type() {
+    if (i < text.length) {
+      el.innerHTML += text.charAt(i);
+      i++;
 
-      // teddy reaction
+      const teddy = document.getElementById("teddy");
       teddy.style.transform = "scale(1.2)";
-      setTimeout(()=>{
-        teddy.style.transform = "scale(1)";
-      },300);
+      setTimeout(()=>teddy.style.transform="scale(1)",200);
 
-    }, i*1200);
-  });
+      setTimeout(type, 25);
+    }
+  }
+  type();
 }
 
+/* IMAGE FLOW */
+function showImages(){
+  let i=0;
+  const img = document.getElementById('currentImage');
+  const q = document.getElementById('quote');
+
+  setInterval(()=>{
+    img.style.opacity = 0;
+
+    setTimeout(()=>{
+      img.src = images[i];
+      q.innerText = quotes[i];
+      img.style.opacity = 1;
+      i = (i+1) % images.length;
+    },500);
+
+  },2500);
+}
+
+/* HEARTS */
 function startHearts(){
   setInterval(()=>{
     const h=document.createElement('div');
@@ -221,6 +281,7 @@ function startHearts(){
     setTimeout(()=>h.remove(),5000);
   },300);
 }
+
 </script>
 
 </body>
