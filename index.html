@@ -27,9 +27,19 @@ button {
   margin-top: 20px;
 }
 
-input { padding: 12px; width: 80%; border-radius: 20px; border:none; }
+input {
+  padding: 12px;
+  width: 80%;
+  border-radius: 20px;
+  border:none;
+}
 
-.card { margin-top:20px; padding:20px; background: rgba(0,0,0,0.6); border-radius:20px; }
+.card {
+  margin-top:20px;
+  padding:20px;
+  background: rgba(0,0,0,0.6);
+  border-radius:20px;
+}
 
 #poem { white-space: pre-line; }
 
@@ -68,7 +78,7 @@ input { padding: 12px; width: 80%; border-radius: 20px; border:none; }
   50% { transform: translateY(-10px); }
 }
 
-/* FLOAT HEARTS */
+/* HEARTS */
 .heart-float {
   position: fixed;
   bottom: -20px;
@@ -89,7 +99,7 @@ input { padding: 12px; width: 80%; border-radius: 20px; border:none; }
 <!-- LOCK -->
 <div class="container" id="lock">
   <h2>When did I confess my love? 💖</h2>
-  <input id="dateInput">
+  <input id="dateInput" placeholder="DD/MM/YYYY">
   <button onclick="unlock()">Unlock</button>
 </div>
 
@@ -108,23 +118,7 @@ input { padding: 12px; width: 80%; border-radius: 20px; border:none; }
 <div class="container hidden" id="step3">
   <h2>What makes us special? 💞</h2>
   <input id="q2">
-  <button onclick="next('step3','chooseImage')">Next</button>
-</div>
-
-<!-- IMAGE CHOICE -->
-<div class="container hidden" id="chooseImage">
-  <h2>Choose your favorite memory 📸</h2>
-  <select id="imageSelect">
-    <option value="image1.jpg">Image 1</option>
-    <option value="image2.jpg">Image 2</option>
-    <option value="image3.jpg">Image 3</option>
-    <option value="image4.jpg">Image 4</option>
-    <option value="image5.jpg">Image 5</option>
-   
-    <option value="image7.jpg">Image 7</option>
-    <option value="image8.jpg">Image 8</option>
-  </select>
-  <button onclick="finalReveal()">Send by Teddy 🧸</button>
+  <button onclick="finalReveal()">Reveal 💖</button>
 </div>
 
 <!-- RESULT -->
@@ -142,6 +136,7 @@ input { padding: 12px; width: 80%; border-radius: 20px; border:none; }
 
 <script>
 
+/* QUOTES */
 const quotes = [
   "You are my peace ❤️",
   "With you, everything feels right 💫",
@@ -153,6 +148,7 @@ const quotes = [
   "Always you ❤️"
 ];
 
+/* MUSIC */
 function playSmoothMusic() {
   const music = document.getElementById('music');
   music.volume = 0;
@@ -165,11 +161,15 @@ function playSmoothMusic() {
   },300);
 }
 
+/* UNLOCK */
 function unlock(){
   if(document.getElementById('dateInput').value === "25/06/2024"){
     document.getElementById('lock').classList.add('hidden');
     document.getElementById('step1').classList.remove('hidden');
+    startHearts();
     playSmoothMusic();
+  } else {
+    alert("Try again 💭");
   }
 }
 
@@ -178,14 +178,14 @@ function next(c,n){
   document.getElementById(n).classList.remove('hidden');
 }
 
+/* FINAL REVEAL */
 function finalReveal(){
   const m = document.getElementById('q1').value;
   const u = document.getElementById('q2').value;
 
-  // RANDOM IMAGE + QUOTE
   const images = [
     "image1.jpg","image2.jpg","image3.jpg","image4.jpg",
-    "image5.jpg","image7.jpg","image8.jpg"
+    "image5.jpg","image6.jpg","image7.jpg","image8.jpg"
   ];
 
   const randomIndex = Math.floor(Math.random() * images.length);
@@ -200,46 +200,24 @@ ${u}… அது நம்ம காதலோட உண்மை 💞
 
 எதுவானாலும்… நான் உன்னோடதான் ❤️`;
 
-  document.getElementById('chooseImage').classList.add('hidden');
+  document.getElementById('step3').classList.add('hidden');
   document.getElementById('result').classList.remove('hidden');
 
   typeWriter(poem);
 
-  // teddy animation
   const teddy = document.getElementById('teddy');
   teddy.style.transform = "translateY(-50px)";
 
   setTimeout(()=>{
     document.getElementById('finalImage').src = img;
 
-    // RANDOM QUOTE (independent)
     const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
     document.getElementById('quote').innerText = randomQuote;
 
   },1000);
-}… அந்த நினைவு என் மனசுல இருக்குது ❤️
-
-${u}… அது நம்ம காதலோட உண்மை 💞
-
-நீ இருந்தா தான் எனக்கு அமைதி 😌
-
-எதுவானாலும்… நான் உன்னோடதான் ❤️`;
-
-  document.getElementById('chooseImage').classList.add('hidden');
-  document.getElementById('result').classList.remove('hidden');
-
-  typeWriter(poem);
-
-  // teddy delivers image
-  const teddy = document.getElementById('teddy');
-  teddy.style.transform = "translateY(-50px)";
-
-  setTimeout(()=>{
-    document.getElementById('finalImage').src = img;
-    document.getElementById('quote').innerText = quotes[Math.floor(Math.random()*quotes.length)];
-  },1000);
 }
 
+/* TYPE EFFECT */
 function typeWriter(text) {
   const el = document.getElementById("poem");
   el.innerHTML = "";
@@ -253,6 +231,18 @@ function typeWriter(text) {
     }
   }
   type();
+}
+
+/* HEARTS */
+function startHearts(){
+  setInterval(()=>{
+    const h=document.createElement('div');
+    h.className='heart-float';
+    h.innerHTML='❤️';
+    h.style.left=Math.random()*100+'vw';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),5000);
+  },300);
 }
 
 </script>
