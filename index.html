@@ -9,265 +9,228 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #0f0f0f, #2a1f1f);
-  color: #f5e6e0;
+  background: linear-gradient(135deg, #0a0a0a, #2a1a14);
+  color: #ffe5d9;
   text-align: center;
 }
 
-.container { padding: 30px 15px; }
-.hidden { display:none; }
-
 /* GLASS CARD */
-.glass {
-  background: rgba(255,255,255,0.08);
+.card {
+  background: rgba(255, 228, 213, 0.08);
   backdrop-filter: blur(12px);
   border-radius: 20px;
   padding: 20px;
   width: 85%;
-  margin: auto;
-  box-shadow: 0 0 20px rgba(255,255,255,0.1);
+  margin: 20px auto;
+  box-shadow: 0 0 20px rgba(255, 200, 170, 0.15);
+}
+
+.hidden { display: none; }
+
+input {
+  padding: 10px;
+  width: 70%;
+  border-radius: 20px;
+  border: none;
+  background: rgba(255, 200, 170, 0.2);
+  color: #fff;
+  text-align: center;
 }
 
 button {
   padding: 12px 20px;
   border-radius: 25px;
   border: none;
-  background: #ff4d6d;
-  color: #fff;
-  cursor: pointer;
-  margin-top: 15px;
+  background: #ff8c6a;
+  color: #000;
   font-weight: bold;
+  margin-top: 15px;
+  cursor: pointer;
 }
 
-/* SMALL INPUT */
-input {
-  padding: 10px;
-  width: 70%;
-  border-radius: 20px;
-  border: none;
-  text-align: center;
-  margin-top: 10px;
-  background: rgba(255,255,255,0.15);
-  color: white;
+button:active {
+  transform: scale(0.95);
 }
 
+/* IMAGE */
+#frame img {
+  width: 220px;
+  height: 280px;
+  border-radius: 15px;
+  margin-top: 20px;
+  object-fit: cover;
+}
+
+/* POEM */
 #poem {
   white-space: pre-line;
   font-size: 17px;
+  line-height: 1.5;
   animation: glow 2s infinite alternate;
 }
 
 @keyframes glow {
-  from { text-shadow: 0 0 5px #fff; }
-  to { text-shadow: 0 0 15px #ff4d6d; }
+  from { text-shadow: 0 0 5px #ffb199; }
+  to { text-shadow: 0 0 15px #ff8c6a; }
 }
 
-#frame {
-  width: 220px;
-  height: 280px;
-  margin: 20px auto;
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-#frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-#quote {
-  margin-top: 10px;
-  font-style: italic;
-}
-
+/* TEDDY */
 #teddy {
   position: fixed;
   bottom: 15px;
   right: 15px;
   width: 70px;
-  animation: floatTeddy 3s infinite;
+  animation: float 3s infinite;
 }
 
-@keyframes floatTeddy {
+@keyframes float {
   0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-10px); }
 }
 
-.heart-float {
-  position: fixed;
-  bottom: -20px;
-  animation: floatUp 5s linear infinite;
-}
-
-@keyframes floatUp {
-  0% { transform: translateY(0); opacity:1; }
-  100% { transform: translateY(-100vh); opacity:0; }
-}
 </style>
 </head>
 
 <body>
 
-<audio id="music" src="song.mp3" loop preload="auto"></audio>
+<audio id="music" src="song.mp3" loop></audio>
 
-<div class="container">
-
-<div class="glass" id="lock">
+<!-- LOCK -->
+<div class="card" id="lock">
   <h3>When did I confess my love? 💖</h3>
   <input id="dateInput" placeholder="DD/MM/YYYY">
   <br>
   <button onclick="unlock()">Unlock</button>
 </div>
 
-<div class="glass hidden" id="step1">
-  <h3>Tap to open 💌</h3>
-  <button onclick="next('step1','step2')">Open</button>
+<!-- STEP -->
+<div class="card hidden" id="step1">
+  <h3>Tap to begin 💌</h3>
+  <button onclick="next()">Start</button>
 </div>
 
-<div class="glass hidden" id="step2">
-  <h3>Best memory? 💭</h3>
+<div class="card hidden" id="step2">
+  <h3>Best memory with me? 💭</h3>
   <input id="q1">
-  <button onclick="next('step2','step3')">Next</button>
+  <button onclick="next2()">Next</button>
 </div>
 
-<div class="glass hidden" id="step3">
+<div class="card hidden" id="step3">
   <h3>What makes us special? 💞</h3>
   <input id="q2">
-  <button onclick="finalReveal()">Reveal 💖</button>
+  <button onclick="show()">Reveal ❤️</button>
 </div>
 
-<div class="glass hidden" id="result">
+<!-- RESULT -->
+<div class="card hidden" id="result">
   <div id="poem"></div>
-
-  <div id="frame">
-    <img id="finalImage">
-  </div>
-
+  <div id="frame"><img id="img"></div>
   <div id="quote"></div>
-</div>
-
 </div>
 
 <img id="teddy" src="https://media.tenor.com/0AVbKGY_MxMAAAAi/teddy-bear.gif">
 
 <script>
 
-const quotes = [
-  "You are my peace ❤️",
-  "With you, everything feels right 💫",
-  "My heart feels home with you 💞",
-  "You are my calm 🌙",
-  "Your smile is my world 💖",
-  "Forever feels easy 🤍",
-  "You are my happiness ❤️",
-  "Always you ❤️"
+const images = [
+"image1.jpg","image2.jpg","image3.jpg","image4.jpg",
+"image5.jpg","image6.jpg","image7.jpg","image8.jpg"
 ];
 
-function playSmoothMusic() {
-  const music = document.getElementById('music');
+const quotes = [
+"You are my peace ❤️",
+"You are my safe place 🫶",
+"With you, everything feels right 💫",
+"You are my forever 💍",
+"My heart belongs to you 💖",
+"You complete me 🌹"
+];
 
-  // force play after user action
-  music.muted = true;
-  music.play().then(() => {
-    music.muted = false;
+/* AUDIO FIX (STRONGEST VERSION) */
+function playMusic(){
+  const m = document.getElementById("music");
 
-    let vol = 0;
-    music.volume = 0;
+  m.play().then(()=> {
+    m.volume = 0;
+    let v = 0;
 
-    const fade = setInterval(() => {
-      if (vol < 0.3) {
-        vol += 0.01;
-        music.volume = vol;
-      } else {
-        clearInterval(fade);
-      }
-    }, 250);
+    const fade = setInterval(()=>{
+      if(v < 0.3){
+        v += 0.01;
+        m.volume = v;
+      } else clearInterval(fade);
+    },200);
 
-  }).catch(() => {
-    console.log("Autoplay blocked - user interaction needed");
+  }).catch(()=> {
+    // fallback: play on next click
+    document.body.addEventListener("click", ()=>{
+      m.play();
+    }, {once:true});
   });
-} else {
-        clearInterval(fade);
-      }
-    }, 300);
-  }).catch(()=>{});
 }
 
+/* FLOW */
 function unlock(){
-  if(document.getElementById('dateInput').value === "25/06/2024"){
-    document.getElementById('lock').classList.add('hidden');
-    document.getElementById('step1').classList.remove('hidden');
-    startHearts();
-    playSmoothMusic();
+  if(document.getElementById("dateInput").value === "25/06/2024"){
+    document.getElementById("lock").classList.add("hidden");
+    document.getElementById("step1").classList.remove("hidden");
+    playMusic();
   } else {
     alert("Try again 💭");
   }
 }
 
-function next(c,n){
-  document.getElementById(c).classList.add('hidden');
-  document.getElementById(n).classList.remove('hidden');
+function next(){
+  document.getElementById("step1").classList.add("hidden");
+  document.getElementById("step2").classList.remove("hidden");
 }
 
-function finalReveal(){
-  const m = document.getElementById('q1').value;
-  const u = document.getElementById('q2').value;
+function next2(){
+  document.getElementById("step2").classList.add("hidden");
+  document.getElementById("step3").classList.remove("hidden");
+}
 
-  const images = [
-    "image1.jpg","image2.jpg","image3.jpg","image4.jpg",
-    "image5.jpg","image6.jpg","image7.jpg","image8.jpg"
-  ];
+/* FINAL */
+function show(){
+  document.getElementById("step3").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
 
-  const img = images[Math.floor(Math.random()*images.length)];
+  const m = document.getElementById("q1").value;
+  const u = document.getElementById("q2").value;
 
   const poem = `
-${m}… that moment still lives in my heart 💖✨
+That moment… ${m} still lives in my heart 💖✨
 
-${u}… that’s what makes us so rare and beautiful 💞🌹
+What we share… ${u} makes us rare and beautiful 💞🌹
 
-Whenever I think of you… I feel calm, safe, and loved 🥺❤️
+With you, I feel safe, calm, and loved 🥺❤️
 
-No matter what happens… I’ll always choose you, again and again 💍💫`;;
-
-  document.getElementById('step3').classList.add('hidden');
-  document.getElementById('result').classList.remove('hidden');
+No matter what happens… I will always choose you 💍💫
+`;
 
   typeWriter(poem);
 
-  const teddy = document.getElementById('teddy');
-  teddy.style.transform = "translateY(-40px)";
+  document.getElementById("img").src =
+    images[Math.floor(Math.random()*images.length)];
 
-  setTimeout(()=>{
-    document.getElementById('finalImage').src = img;
-    document.getElementById('quote').innerText = quotes[Math.floor(Math.random()*quotes.length)];
-  },1000);
+  document.getElementById("quote").innerText =
+    quotes[Math.floor(Math.random()*quotes.length)];
 }
 
-function typeWriter(text) {
+/* TYPE EFFECT */
+function typeWriter(text){
   const el = document.getElementById("poem");
   el.innerHTML = "";
   let i = 0;
 
-  function type() {
-    if (i < text.length) {
+  function type(){
+    if(i < text.length){
       el.innerHTML += text.charAt(i);
       i++;
-      setTimeout(type, 25);
+      setTimeout(type, 20);
     }
   }
   type();
-}
-
-function startHearts(){
-  setInterval(()=>{
-    const h=document.createElement('div');
-    h.className='heart-float';
-    h.innerHTML='❤️';
-    h.style.left=Math.random()*100+'vw';
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),5000);
-  },300);
 }
 
 </script>
