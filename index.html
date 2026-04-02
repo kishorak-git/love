@@ -166,18 +166,28 @@ const quotes = [
 
 function playSmoothMusic() {
   const music = document.getElementById('music');
-  music.muted = true;
 
+  // force play after user action
+  music.muted = true;
   music.play().then(() => {
     music.muted = false;
-    let v = 0;
+
+    let vol = 0;
     music.volume = 0;
 
     const fade = setInterval(() => {
-      if (v < 0.3) {
-        v += 0.01;
-        music.volume = v;
+      if (vol < 0.3) {
+        vol += 0.01;
+        music.volume = vol;
       } else {
+        clearInterval(fade);
+      }
+    }, 250);
+
+  }).catch(() => {
+    console.log("Autoplay blocked - user interaction needed");
+  });
+} else {
         clearInterval(fade);
       }
     }, 300);
@@ -212,13 +222,13 @@ function finalReveal(){
   const img = images[Math.floor(Math.random()*images.length)];
 
   const poem = `
-${m}… அந்த நினைவு என் மனசுல இருக்குது ❤️
+${m}… that moment still lives in my heart 💖✨
 
-${u}… அது நம்ம காதலோட உண்மை 💞
+${u}… that’s what makes us so rare and beautiful 💞🌹
 
-நீ இருந்தா தான் எனக்கு அமைதி 😌
+Whenever I think of you… I feel calm, safe, and loved 🥺❤️
 
-எதுவானாலும்… நான் உன்னோடதான் ❤️`;
+No matter what happens… I’ll always choose you, again and again 💍💫`;;
 
   document.getElementById('step3').classList.add('hidden');
   document.getElementById('result').classList.remove('hidden');
