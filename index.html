@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You ❤️</title>
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #1a1a1a, #3a2a2a);
+  color: #f5e6e0;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+.container { padding: 40px 20px; }
+.hidden { display:none; }
+
+button {
+  padding: 15px 25px;
+  border-radius: 25px;
+  border: none;
+  background: #fff;
+  color: #000;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.card {
+  margin-top: 25px;
+  padding: 20px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 20px;
+}
+
+input {
+  padding: 12px;
+  width: 80%;
+  border-radius: 20px;
+  border: none;
+  text-align: center;
+}
+
+#poem { white-space: pre-line; line-height: 1.6; }
+
+.gallery img {
+  width: 80%;
+  margin: 10px;
+  border-radius: 15px;
+  transition: transform 0.4s ease;
+}
+
+.gallery img:hover {
+  transform: scale(1.05);
+}
+
+/* Teddy */
+#teddy {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 50px;
+  animation: floatTeddy 3s ease-in-out infinite;
+  cursor: pointer;
+}
+
+@keyframes floatTeddy {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.heart-float {
+  position: fixed;
+  bottom: -20px;
+  color: black;
+  animation: floatUp 5s linear infinite;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0); opacity:1; }
+  100% { transform: translateY(-100vh); opacity:0; }
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="lock">
+  <h2>When did I confess my love? 💖</h2>
+  <input id="dateInput" placeholder="DD/MM/YYYY">
+  <button onclick="unlock()">Unlock</button>
+</div>
+
+<div class="container hidden" id="step1">
+  <h2>Tap to open 💌</h2>
+  <button onclick="next('step1','step2')">Open</button>
+</div>
+
+<div class="container hidden" id="step2">
+  <h2>Our first vibe… what do you remember? 💭</h2>
+  <input id="q1">
+  <button onclick="next('step2','step3')">Next</button>
+</div>
+
+<div class="container hidden" id="step3">
+  <h2>What makes us special? 💞</h2>
+  <input id="q2">
+  <button onclick="next('step3','step4')">Next</button>
+</div>
+
+<div class="container hidden" id="step4">
+  <h2>How do I make you feel? ❤️</h2>
+  <input id="q3">
+  <button onclick="generatePoem()">Reveal ✨</button>
+</div>
+
+<div class="container hidden" id="result">
+  <h2>For You ❤️</h2>
+  <div id="poem" class="card"></div>
+
+  <div class="gallery">
+    <img src="image1.jpg">
+    <img src="image2.jpg">
+    <img src="image3.jpg">
+    <img src="image4.jpg">
+    <img src="image5.jpg">
+  </div>
+</div>
+
+<div id="teddy">🧸</div>
+
+<script>
+function unlock() {
+  if(document.getElementById('dateInput').value === "25/06/2024") {
+    document.getElementById('lock').classList.add('hidden');
+    document.getElementById('step1').classList.remove('hidden');
+    startHearts();
+  } else {
+    alert("Try again 💭");
+  }
+}
+
+function next(c,n){
+  document.getElementById(c).classList.add('hidden');
+  document.getElementById(n).classList.remove('hidden');
+}
+
+function generatePoem(){
+  const m=document.getElementById('q1').value;
+  const u=document.getElementById('q2').value;
+  const f=document.getElementById('q3').value;
+
+  const poem=`
+It started with ${m},
+A moment I still feel.
+
+Somewhere we became ${u},
+Something rare, something real.
+
+Every time I see you,
+I feel ${f} inside.
+
+And through everything,
+I just want you by my side ❤️`;
+
+  document.getElementById('step4').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  document.getElementById('poem').innerText=poem;
+}
+
+function startHearts(){
+  setInterval(()=>{
+    const h=document.createElement('div');
+    h.className='heart-float';
+    h.innerHTML='❤️';
+    h.style.left=Math.random()*100+'vw';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),5000);
+  },300);
+}
+
+// Teddy reactions
+const teddy=document.getElementById('teddy');
+teddy.onclick=()=>{
+  teddy.innerHTML='💖';
+  setTimeout(()=>teddy.innerHTML='🧸',1000);
+};
+</script>
+
+</body>
+</html>
