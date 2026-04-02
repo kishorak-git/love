@@ -12,7 +12,6 @@ body {
   background: linear-gradient(135deg, #1a1a1a, #3a2a2a);
   color: #f5e6e0;
   text-align: center;
-  overflow-x: hidden;
 }
 
 .container { padding: 40px 20px; }
@@ -28,33 +27,26 @@ button {
   margin-top: 20px;
 }
 
-.card {
-  margin-top: 25px;
-  padding: 20px;
-  background: rgba(0,0,0,0.6);
+input { padding: 12px; width: 80%; border-radius: 20px; border:none; }
+
+.card { margin-top:20px; padding:20px; background: rgba(0,0,0,0.6); border-radius:20px; }
+
+#poem { white-space: pre-line; }
+
+/* IMAGE FRAME */
+#frame {
+  width: 250px;
+  height: 300px;
+  margin: 20px auto;
   border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(255,255,255,0.2);
 }
 
-input {
-  padding: 12px;
-  width: 80%;
-  border-radius: 20px;
-  border: none;
-  text-align: center;
-}
-
-#poem {
-  white-space: pre-line;
-  line-height: 1.6;
-  font-size: 18px;
-}
-
-/* IMAGE BOX */
-#imageBox img {
-  width: 80%;
-  border-radius: 15px;
-  opacity: 0;
-  transition: opacity 1s ease;
+#frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 #quote {
@@ -76,27 +68,16 @@ input {
   50% { transform: translateY(-10px); }
 }
 
-/* HEARTS */
+/* FLOAT HEARTS */
 .heart-float {
   position: fixed;
   bottom: -20px;
-  color: black;
   animation: floatUp 5s linear infinite;
 }
 
 @keyframes floatUp {
   0% { transform: translateY(0); opacity:1; }
   100% { transform: translateY(-100vh); opacity:0; }
-}
-
-/* GLOW */
-#poem {
-  animation: glow 2s infinite alternate;
-}
-
-@keyframes glow {
-  from { text-shadow: 0 0 5px #fff; }
-  to { text-shadow: 0 0 15px #ff4d6d; }
 }
 </style>
 </head>
@@ -108,7 +89,7 @@ input {
 <!-- LOCK -->
 <div class="container" id="lock">
   <h2>When did I confess my love? 💖</h2>
-  <input id="dateInput" placeholder="DD/MM/YYYY">
+  <input id="dateInput">
   <button onclick="unlock()">Unlock</button>
 </div>
 
@@ -119,7 +100,7 @@ input {
 </div>
 
 <div class="container hidden" id="step2">
-  <h2>Best memory with me? 💭</h2>
+  <h2>Best memory? 💭</h2>
   <input id="q1">
   <button onclick="next('step2','step3')">Next</button>
 </div>
@@ -127,48 +108,51 @@ input {
 <div class="container hidden" id="step3">
   <h2>What makes us special? 💞</h2>
   <input id="q2">
-  <button onclick="next('step3','step4')">Next</button>
+  <button onclick="next('step3','chooseImage')">Next</button>
 </div>
 
-<div class="container hidden" id="step4">
-  <h2>How do you feel about us? ❤️</h2>
-  <input id="q3">
-  <button onclick="generatePoem()">Reveal ✨</button>
+<!-- IMAGE CHOICE -->
+<div class="container hidden" id="chooseImage">
+  <h2>Choose your favorite memory 📸</h2>
+  <select id="imageSelect">
+    <option value="image1.jpg">Image 1</option>
+    <option value="image2.jpg">Image 2</option>
+    <option value="image3.jpg">Image 3</option>
+    <option value="image4.jpg">Image 4</option>
+    <option value="image5.jpg">Image 5</option>
+   
+    <option value="image7.jpg">Image 7</option>
+    <option value="image8.jpg">Image 8</option>
+  </select>
+  <button onclick="finalReveal()">Send by Teddy 🧸</button>
 </div>
 
 <!-- RESULT -->
 <div class="container hidden" id="result">
   <div id="poem" class="card"></div>
 
-  <div id="imageBox">
-    <img id="currentImage">
-    <div id="quote"></div>
+  <div id="frame">
+    <img id="finalImage">
   </div>
+
+  <div id="quote"></div>
 </div>
 
 <img id="teddy" src="https://media.tenor.com/0AVbKGY_MxMAAAAi/teddy-bear.gif">
 
 <script>
 
-/* IMAGES */
-const images = [
-  "image1.jpg","image2.jpg","image3.jpg","image4.jpg",
-  "image5.jpg","image7.jpg","image8.jpg"
-];
-
-/* QUOTES */
 const quotes = [
-  "With you, even silence feels special ❤️",
-  "Every moment with you is my favorite 💫",
-  "You are my calm and my chaos 💞",
-  "Your smile is my world 🌍",
-  "You are my peace 🤍",
-  "Time stops with you ⏳",
-  "You are my happiness 💖",
-  "It’s always you ❤️"
+  "You are my peace ❤️",
+  "With you, everything feels right 💫",
+  "My heart feels home with you 💞",
+  "You are my calm in chaos 🌙",
+  "Your smile is my world 💖",
+  "Forever feels easy with you 🤍",
+  "You are my happiness ❤️",
+  "Always you ❤️"
 ];
 
-/* MUSIC */
 function playSmoothMusic() {
   const music = document.getElementById('music');
   music.volume = 0;
@@ -181,15 +165,11 @@ function playSmoothMusic() {
   },300);
 }
 
-/* UNLOCK */
-function unlock() {
-  if(document.getElementById('dateInput').value === "25/06/2024") {
+function unlock(){
+  if(document.getElementById('dateInput').value === "25/06/2024"){
     document.getElementById('lock').classList.add('hidden');
     document.getElementById('step1').classList.remove('hidden');
-    startHearts();
     playSmoothMusic();
-  } else {
-    alert("Try again 💭");
   }
 }
 
@@ -198,39 +178,68 @@ function next(c,n){
   document.getElementById(n).classList.remove('hidden');
 }
 
-/* POEM GENERATOR */
-function generatePoem(){
+function finalReveal(){
   const m = document.getElementById('q1').value;
   const u = document.getElementById('q2').value;
-  const f = document.getElementById('q3').value;
 
-  const endings = [
-    "நீ நலமா இருந்தா தான் நான் சந்தோஷம் ❤️",
-    "உன்ன கவனிக்குறதுல தான் என் காதல் இருக்குது 💞",
-    "நீ தான் என் அமைதி 🤍",
-    "உன்ன சிரிக்க வைக்க தான் என் வாழ்க்கை 💖"
+  // RANDOM IMAGE + QUOTE
+  const images = [
+    "image1.jpg","image2.jpg","image3.jpg","image4.jpg",
+    "image5.jpg","image7.jpg","image8.jpg"
   ];
 
-  const ending = endings[Math.floor(Math.random()*endings.length)];
+  const randomIndex = Math.floor(Math.random() * images.length);
+  const img = images[randomIndex];
 
   const poem = `
-${m}… அந்த நினைவு இன்னும் என் மனசுல இருக்குது ❤️
+${m}… அந்த நினைவு என் மனசுல இருக்குது ❤️
 
-${u}… அது நம்ம காதலோட அடையாளம் 💞
+${u}… அது நம்ம காதலோட உண்மை 💞
 
-நீ நினைச்சாலே… எனக்கு ${f} தான் உணர்ச்சி 😌
+நீ இருந்தா தான் எனக்கு அமைதி 😌
 
-${ending}
-`;
+எதுவானாலும்… நான் உன்னோடதான் ❤️`;
 
-  document.getElementById('step4').classList.add('hidden');
+  document.getElementById('chooseImage').classList.add('hidden');
   document.getElementById('result').classList.remove('hidden');
 
   typeWriter(poem);
-  showImages();
+
+  // teddy animation
+  const teddy = document.getElementById('teddy');
+  teddy.style.transform = "translateY(-50px)";
+
+  setTimeout(()=>{
+    document.getElementById('finalImage').src = img;
+
+    // RANDOM QUOTE (independent)
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById('quote').innerText = randomQuote;
+
+  },1000);
+}… அந்த நினைவு என் மனசுல இருக்குது ❤️
+
+${u}… அது நம்ம காதலோட உண்மை 💞
+
+நீ இருந்தா தான் எனக்கு அமைதி 😌
+
+எதுவானாலும்… நான் உன்னோடதான் ❤️`;
+
+  document.getElementById('chooseImage').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+
+  typeWriter(poem);
+
+  // teddy delivers image
+  const teddy = document.getElementById('teddy');
+  teddy.style.transform = "translateY(-50px)";
+
+  setTimeout(()=>{
+    document.getElementById('finalImage').src = img;
+    document.getElementById('quote').innerText = quotes[Math.floor(Math.random()*quotes.length)];
+  },1000);
 }
 
-/* TYPING */
 function typeWriter(text) {
   const el = document.getElementById("poem");
   el.innerHTML = "";
@@ -240,46 +249,10 @@ function typeWriter(text) {
     if (i < text.length) {
       el.innerHTML += text.charAt(i);
       i++;
-
-      const teddy = document.getElementById("teddy");
-      teddy.style.transform = "scale(1.2)";
-      setTimeout(()=>teddy.style.transform="scale(1)",200);
-
       setTimeout(type, 25);
     }
   }
   type();
-}
-
-/* IMAGE FLOW */
-function showImages(){
-  let i=0;
-  const img = document.getElementById('currentImage');
-  const q = document.getElementById('quote');
-
-  setInterval(()=>{
-    img.style.opacity = 0;
-
-    setTimeout(()=>{
-      img.src = images[i];
-      q.innerText = quotes[i];
-      img.style.opacity = 1;
-      i = (i+1) % images.length;
-    },500);
-
-  },2500);
-}
-
-/* HEARTS */
-function startHearts(){
-  setInterval(()=>{
-    const h=document.createElement('div');
-    h.className='heart-float';
-    h.innerHTML='❤️';
-    h.style.left=Math.random()*100+'vw';
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),5000);
-  },300);
 }
 
 </script>
