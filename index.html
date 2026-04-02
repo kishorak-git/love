@@ -48,21 +48,23 @@ input {
   width: 80%;
   margin: 10px;
   border-radius: 15px;
-  transition: transform 0.4s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease;
 }
 
-.gallery img:hover {
-  transform: scale(1.05);
+.gallery img.show {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Teddy */
+/* Animated Teddy */
 #teddy {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  font-size: 50px;
+  width: 80px;
   animation: floatTeddy 3s ease-in-out infinite;
-  cursor: pointer;
 }
 
 @keyframes floatTeddy {
@@ -85,6 +87,8 @@ input {
 </head>
 <body>
 
+<audio id="music" src="song.mp3"></audio>
+
 <div class="container" id="lock">
   <h2>When did I confess my love? 💖</h2>
   <input id="dateInput" placeholder="DD/MM/YYYY">
@@ -97,19 +101,19 @@ input {
 </div>
 
 <div class="container hidden" id="step2">
-  <h2>Our first vibe… what do you remember? 💭</h2>
+  <h2>What moment made you smile the most with me? 💭</h2>
   <input id="q1">
   <button onclick="next('step2','step3')">Next</button>
 </div>
 
 <div class="container hidden" id="step3">
-  <h2>What makes us special? 💞</h2>
+  <h2>What is something only we understand? 💞</h2>
   <input id="q2">
   <button onclick="next('step3','step4')">Next</button>
 </div>
 
 <div class="container hidden" id="step4">
-  <h2>How do I make you feel? ❤️</h2>
+  <h2>What do you feel when you think of us? ❤️</h2>
   <input id="q3">
   <button onclick="generatePoem()">Reveal ✨</button>
 </div>
@@ -124,10 +128,13 @@ input {
     <img src="image3.jpg">
     <img src="image4.jpg">
     <img src="image5.jpg">
+    <img src="image6.jpg">
+    <img src="image7.jpg">
+    <img src="image8.jpg">
   </div>
 </div>
 
-<div id="teddy">🧸</div>
+<img id="teddy" src="https://media.tenor.com/0AVbKGY_MxMAAAAi/teddy-bear.gif">
 
 <script>
 function unlock() {
@@ -152,20 +159,32 @@ function generatePoem(){
 
   const poem=`
 It started with ${m},
-A moment I still feel.
+A memory that still glows.
 
-Somewhere we became ${u},
-Something rare, something real.
+In quiet moments we became ${u},
+Something only our hearts knows.
 
-Every time I see you,
-I feel ${f} inside.
+Whenever I think of you,
+I feel ${f} deep inside.
 
-And through everything,
+No matter where life goes,
 I just want you by my side ❤️`;
 
   document.getElementById('step4').classList.add('hidden');
   document.getElementById('result').classList.remove('hidden');
   document.getElementById('poem').innerText=poem;
+
+  startGallery();
+  document.getElementById('music').play();
+}
+
+function startGallery(){
+  const images=document.querySelectorAll('.gallery img');
+  images.forEach((img,i)=>{
+    setTimeout(()=>{
+      img.classList.add('show');
+    }, i*1000);
+  });
 }
 
 function startHearts(){
@@ -178,13 +197,6 @@ function startHearts(){
     setTimeout(()=>h.remove(),5000);
   },300);
 }
-
-// Teddy reactions
-const teddy=document.getElementById('teddy');
-teddy.onclick=()=>{
-  teddy.innerHTML='💖';
-  setTimeout(()=>teddy.innerHTML='🧸',1000);
-};
 </script>
 
 </body>
